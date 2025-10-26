@@ -1,0 +1,357 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Updated color tokens to match MIGEPROF design brief with blue, red, white, green palette */
+  --background: #ffffff;
+  --foreground: #1f2937;
+  --card: #f1f5f9;
+  --card-foreground: #1f2937;
+  --popover: #ffffff;
+  --popover-foreground: #1f2937;
+  --primary: #0056b3;
+  --primary-foreground: #ffffff;
+  --secondary: #d9534f;
+  --secondary-foreground: #ffffff;
+  --muted: #6b7280;
+  --muted-foreground: #000000;
+  --accent: #5cb85c;
+  --accent-foreground: #ffffff;
+  --destructive: #d9534f;
+  --destructive-foreground: #ffffff;
+  --border: #e5e7eb;
+  --input: #f1f5f9;
+  --ring: rgba(0, 86, 179, 0.5);
+  --chart-1: #0056b3;
+  --chart-3: #5cb85c;
+  --chart-2: #d9534f;
+  --chart-4: #f1f5f9;
+  --chart-5: #1f2937;
+  --radius: 0.5rem;
+  --sidebar: #f1f5f9;
+  --sidebar-foreground: #1f2937;
+  --sidebar-primary: #0056b3;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #5cb85c;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #e5e7eb;
+  --sidebar-ring: rgba(0, 86, 179, 0.5);
+}
+
+/* .dark {
+  --background: #1f2937;
+  --foreground: #000000;
+  --card: #374151;
+  --card-foreground: #ffffff;
+  --popover: #1f2937;
+  --popover-foreground: #ffffff;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --secondary: #ef4444;
+  --secondary-foreground: #ffffff;
+  --muted: #6b7280;
+  --muted-foreground: #ffffff;
+  --accent: #10b981;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #4b5563;
+  --input: #374151;
+  --ring: rgba(59, 130, 246, 0.5);
+  --chart-1: #3b82f6;
+  --chart-2: #10b981;
+  --chart-3: #ef4444;
+  --chart-4: #374151;
+  --chart-5: #ffffff;
+  --sidebar: #374151;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #3b82f6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #10b981;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #4b5563;
+  --sidebar-ring: rgba(59, 130, 246, 0.5);
+}*/
+
+@theme inline {
+  --font-sans: var(--font-poppins);
+  --font-mono: var(--font-geist-mono);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+} 
+
+/* @layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+} */
+
+
+.dark {
+  /* Clean Dark Theme - Minimal borders */
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --card: #161616;
+  --card-foreground: #fafafa;
+  --popover: #161616;
+  --popover-foreground: #fafafa;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --secondary: #f59e0b;
+  --secondary-foreground: #000000;
+  --muted: #262626;
+  --muted-foreground: #a3a3a3;
+  --accent: #10b981;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #262626; /* Much subtler borders */
+  --input: #161616;
+  --ring: #3b82f6;
+  
+  /* Sidebar - Clean dark */
+  --sidebar: #0f0f0f;
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: #3b82f6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #10b981;
+  --sidebar-border: #1a1a1a; /* Very subtle border */
+  
+  /* Header - Clean dark */
+  --header: #0f0f0f;
+  --header-foreground: #fafafa;
+  --header-border: #1a1a1a; /* Very subtle border */
+}
+
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+
+  .dark {
+    /* Remove most borders and use cleaner visual separation */
+    
+    /* Cards - No borders, use shadows for separation */
+    .card, [class*="card"], .bg-card {
+      background: var(--card) !important;
+      border: none !important; /* Remove borders */
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    }
+    
+    .card:hover {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Tables - Clean without heavy borders */
+    table {
+      background: var(--card) !important;
+      border: none !important; /* Remove table border */
+    }
+    
+    th {
+      background: var(--muted) !important;
+      color: var(--foreground) !important;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border) !important; /* Keep only bottom border */
+      border-top: none !important;
+    }
+    
+    td {
+      border-bottom: 1px solid var(--border) !important; /* Keep only bottom border */
+      color: var(--foreground) !important;
+      border-left: none !important;
+      border-right: none !important;
+    }
+    
+    tr:hover {
+      background: var(--muted) !important;
+    }
+
+    /* Sidebar - Clean with minimal borders */
+    aside, .sidebar, nav {
+      background: var(--sidebar) !important;
+      border-right: 1px solid var(--sidebar-border) !important; /* Keep only right border */
+    }
+
+    /* Header - Clean with minimal border */
+    header, .header {
+      background: var(--header) !important;
+      border-bottom: 1px solid var(--header-border) !important; /* Keep only bottom border */
+    }
+
+    /* Inputs - Clean with subtle borders */
+    input, textarea, select {
+      background: var(--input) !important;
+      border: 1px solid var(--border) !important; /* Keep but make subtle */
+      color: var(--foreground) !important;
+    }
+    
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--primary) !important;
+      box-shadow: 0 0 0 2px var(--ring) !important;
+    }
+
+    /* Buttons - No borders for default buttons */
+    button:not(.border):not([class*="border-"]) {
+      border: none !important;
+    }
+
+    /* Remove borders from stats/metric cards */
+    .stat-card, .metric-card {
+      border: none !important;
+      background: var(--card) !important;
+    }
+
+    /* Clean up badges */
+    .badge, [class*="badge"]:not(.border) {
+      border: none !important;
+    }
+
+    /* Remove borders from navigation items */
+    .nav-item, [class*="nav-item"] {
+      border: none !important;
+    }
+
+    /* Clean modals */
+    .modal-content {
+      border: none !important;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Remove borders from dropdowns */
+    [class*="dropdown"], [class*="menu"] {
+      border: none !important;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Clean separators - make them more subtle */
+    hr, .separator {
+      border-color: var(--border) !important;
+      opacity: 0.3;
+    }
+
+    /* Remove borders from grid/container elements */
+    .grid, .flex, .container {
+      /* These typically don't need borders */
+    }
+  }
+}
+
+/* Additional clean utility classes */
+@layer utilities {
+  .border-clean {
+    border: 1px solid var(--border);
+  }
+  
+  .border-subtle {
+    border: 1px solid var(--border);
+    opacity: 0.5;
+  }
+  
+  .border-visible {
+    border: 1px solid var(--border);
+  }
+  
+  /* Only use these when borders are absolutely necessary */
+  .border-top-only {
+    border-top: 1px solid var(--border);
+    border-right: none;
+    border-bottom: none;
+    border-left: none;
+  }
+  
+  .border-bottom-only {
+    border-top: none;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    border-left: none;
+  }
+  
+  .no-border {
+    border: none !important;
+  }
+}
+
+/* Force remove borders from common components */
+.dark .border,
+.dark [class*="border-"]:not(.border-clean):not(.border-visible) {
+  border-color: transparent !important;
+}
+
+.dark .border-t,
+.dark .border-r, 
+.dark .border-b,
+.dark .border-l {
+  border-color: transparent !important;
+}
+
+/* Specific component border cleanup */
+.dark .card .border,
+.dark .table .border,
+.dark .grid .border,
+.dark .flex .border {
+  border-color: transparent !important;
+}
+
+/* Keep only essential borders */
+.dark .sidebar {
+  border-right: 1px solid var(--sidebar-border) !important;
+}
+
+.dark .header {
+  border-bottom: 1px solid var(--header-border) !important;
+}
+
+.dark input,
+.dark textarea,
+.dark select {
+  border: 1px solid var(--border) !important;
+}
+
+.dark table th,
+.dark table td {
+  border-bottom: 1px solid var(--border) !important;
+}
