@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE `comment` ADD COLUMN `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);
+
+-- AddForeignKey
+ALTER TABLE `Comment` ADD CONSTRAINT `Comment_focalPersonId_fkey` FOREIGN KEY (`focalPersonId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

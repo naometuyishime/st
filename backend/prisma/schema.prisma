@@ -1,0 +1,326 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ========================= USERS ENTITY =========================
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  email     String   @unique
+  role      Role
+  status    Status   @default(ACTIVE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  auditLogs             AuditLog[]
+  commentsAsFocalPerson Comment[] @relation("UserFocalPersonComments")
+
+  // Many focal persons can belong to one SubCluster
+  subClusterId Int?
+  subCluster   SubCluster? @relation(fields: [subClusterId], references: [id])
+
+  // Stakeholder mapping (each user belongs to one stakeholder organization)
+  stakeholderId Int?
+  stakeholder   Stakeholder? @relation(fields: [stakeholderId], references: [id])
+
+  ActivationToken ActivationToken?
+}
+
+// ========================= ENUMS =========================
+enum Role {
+  STAKEHOLDER_USER
+  ADMIN
+  SUBCLUSTERFOCALPERSON
+  STAKEHOLDER_ADMIN
+}
+
+enum Status {
+  PENDING
+  ACTIVE
+  INACTIVE
+}
+
+// ========================= ACTIVATION TOKEN =========================
+model ActivationToken {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+// ========================= STAKEHOLDERS ENTITY =========================
+model Stakeholder {
+  id                    Int      @id @default(autoincrement())
+  organizationName      String
+  stakeholderCategoryId Int
+  implementationLevel   String   @default("District")
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  stakeholderCategory StakeholderCategory @relation(fields: [stakeholderCategoryId], references: [id])
+
+  stakeholderDistricts   StakeholderDistrict[]
+  stakeholderSubClusters StakeholderSubCluster[]
+  actionPlans            ActionPlan[]
+
+  // Back relation for Stakeholder Admins/Users
+  users User[]
+}
+
+// ========================= STAKEHOLDER CATEGORY =========================
+model StakeholderCategory {
+  id           Int           @id @default(autoincrement())
+  name         String
+  description  String
+  stakeholders Stakeholder[]
+  kpis         KPI[]
+}
+
+// ========================= STAKEHOLDER-DISTRICT RELATION =========================
+model StakeholderDistrict {
+  id             Int         @id @default(autoincrement())
+  stakeholderId  Int
+  districtId     Int
+  stakeholder    Stakeholder @relation(fields: [stakeholderId], references: [id])
+  district       District    @relation(fields: [districtId], references: [id])
+
+  @@unique([stakeholderId, districtId])
+}
+
+// ========================= STAKEHOLDER-SUBCLUSTER RELATION =========================
+model StakeholderSubCluster {
+  id             Int         @id @default(autoincrement())
+  stakeholderId  Int
+  subClusterId   Int
+  stakeholder    Stakeholder @relation(fields: [stakeholderId], references: [id])
+  subCluster     SubCluster  @relation(fields: [subClusterId], references: [id])
+
+  @@unique([stakeholderId, subClusterId])
+}
+
+// ========================= SUBCLUSTERS ENTITY =========================
+model SubCluster {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+
+  // One subcluster can have many focal persons (users)
+  users User[]
+
+  kpis          KPI[]
+  kpiCategories KpiCategory[]
+  ActionPlan    ActionPlan[]
+  stakeholderSubClusters StakeholderSubCluster[]
+}
+
+// ========================= COUNTRIES ENTITY =========================
+model Country {
+  id        Int        @id @default(autoincrement())
+  name      String
+  provinces Province[]
+}
+
+// ========================= PROVINCES ENTITY =========================
+model Province {
+  id         Int        @id @default(autoincrement())
+  name       String
+  countryId  Int
+  country    Country    @relation(fields: [countryId], references: [id])
+  districts  District[]
+}
+
+// ========================= DISTRICTS ENTITY =========================
+model District {
+  id                    Int         @id @default(autoincrement())
+  name                  String
+  provinceId            Int
+  province              Province    @relation(fields: [provinceId], references: [id])
+  stakeholderDistricts  StakeholderDistrict[]
+}
+
+// ========================= KPIs ENTITY =========================
+model KPI {
+  id                    Int      @id @default(autoincrement())
+  name                  String
+  description           String?
+  unit                  String?
+  subClusterId          Int
+  kpiCategoryId         Int?
+  stakeholderCategoryId Int?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Numeric fields for planning / monitoring
+  targetValue  Float?
+  currentValue Float?
+
+  subCluster          SubCluster           @relation(fields: [subClusterId], references: [id])
+  kpiCategory         KpiCategory?         @relation(fields: [kpiCategoryId], references: [id])
+  stakeholderCategory StakeholderCategory? @relation(fields: [stakeholderCategoryId], references: [id])
+  kpiPlans            KpiPlan[]
+  OptionSet           OptionSet?           @relation(fields: [optionSetId], references: [id])
+  optionSetId         Int?
+  KpiOptionSet        KpiOptionSet[]
+}
+
+// ========================= KPI CATEGORY =========================
+model KpiCategory {
+  id           Int        @id @default(autoincrement())
+  name         String
+  kpis         KPI[]
+  subClusterId Int
+  subCluster   SubCluster @relation(fields: [subClusterId], references: [id])
+}
+
+// ========================= OPTION SET =========================
+model OptionSet {
+  id            Int            @id @default(autoincrement())
+  name          String
+  description   String
+  options       Option[]
+  kpiOptionSets KpiOptionSet[]
+  kpisDirect    KPI[] // opposite relation for KPI.OptionSet
+}
+
+// ========================= OPTION ENTITY =========================
+model Option {
+  id            Int            @id @default(autoincrement())
+  optionSetId   Int
+  name          String
+  optionSet     OptionSet      @relation(fields: [optionSetId], references: [id])
+  reportOptions ReportOption[]
+}
+
+// ========================= REPORT OPTION =========================
+model ReportOption {
+  id          Int    @id @default(autoincrement())
+  reportId    Int
+  optionId    Int
+  optionValue String
+
+  report Report @relation(fields: [reportId], references: [id])
+  option Option @relation(fields: [optionId], references: [id])
+}
+
+// ========================= ACTION PLANS =========================
+model ActionPlan {
+  id                      Int      @id @default(autoincrement())
+  yearId                  Int
+  stakeholderSubclusterId Int
+  document                String
+  comment                 String
+  description             String
+  planLevel               String
+  districtId              Int
+  provinceId              Int
+  countryId               Int
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  financialYear FinancialYear @relation(fields: [yearId], references: [id])
+  reports       Report[]
+  kpiPlans      KpiPlan[]
+
+  stakeholderId Int?
+  stakeholder   Stakeholder? @relation(fields: [stakeholderId], references: [id])
+  stakeholderSubcluster SubCluster @relation(fields: [stakeholderSubclusterId], references: [id])
+}
+
+// ========================= FINANCIAL YEAR =========================
+model FinancialYear {
+  id              Int          @id @default(autoincrement())
+  name            String
+  startDate       DateTime
+  endDate         DateTime
+  planStartDate   DateTime
+  planEndDate     DateTime
+  reportStartDate DateTime
+  reportEndDate   DateTime
+  actionPlans     ActionPlan[]
+}
+
+// ========================= REPORTS ENTITY =========================
+model Report {
+  id              Int    @id @default(autoincrement())
+  actionPlanId    Int
+  yearId          Int
+  actualValue     Float
+  kpiPlanId       Int
+  quarterId       Int
+  progressSummary String
+  reportDocument  String
+
+  actionPlan ActionPlan @relation(fields: [actionPlanId], references: [id])
+  quarter    Quarter    @relation(fields: [quarterId], references: [id])
+
+  comments      Comment[]
+  reportOptions ReportOption[]
+}
+
+// ========================= QUARTER ENTITY =========================
+model Quarter {
+  id            Int      @id @default(autoincrement())
+  name          String
+  startDate     DateTime
+  endDate       DateTime
+  reportDueDate DateTime
+  yearId        Int
+  reports       Report[]
+}
+
+// ========================= COMMENTS ENTITY =========================
+model Comment {
+  id            Int      @id @default(autoincrement())
+  reportId      Int
+  focalPersonId Int
+  commentText   String
+  createdAt     DateTime @default(now())
+
+  report      Report @relation(fields: [reportId], references: [id])
+  focalPerson User   @relation("UserFocalPersonComments", fields: [focalPersonId], references: [id])
+}
+
+// ========================= AUDIT LOGS =========================
+model AuditLog {
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  action         String
+  userAgent      String
+  logIpAddress   String
+  logDescription String
+  actionDetails  String
+  timestamps     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+// ========================= KPI-OPTIONSET RELATION =========================
+model KpiOptionSet {
+  id          Int @id @default(autoincrement())
+  optionSetId Int
+  kpiId       Int
+
+  optionSet OptionSet @relation(fields: [optionSetId], references: [id])
+  kpi       KPI       @relation(fields: [kpiId], references: [id])
+}
+
+// ========================= KPI PLAN =========================
+model KpiPlan {
+  id           Int   @id @default(autoincrement())
+  kpiId        Int
+  actionPlanId Int
+  plannedValue Float
+
+  kpi        KPI        @relation(fields: [kpiId], references: [id])
+  actionPlan ActionPlan @relation(fields: [actionPlanId], references: [id])
+}
